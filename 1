@@ -1,0 +1,20 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI(title="AI Agent Server")
+
+class Task(BaseModel):
+    prompt: str
+
+@app.post("/execute")
+def execute_task(task: Task):
+    """Simulates an AI agent processing a task."""
+    print(f"[Agent Server] Received task: {task.prompt}")
+    
+    # Simulating agent "thinking" and generating a response
+    simulated_response = f"Action completed for: '{task.prompt}'."
+    
+    return {
+        "status": "success",
+        "response": simulated_response
+    }
