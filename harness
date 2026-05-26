@@ -1,0 +1,36 @@
+import requests
+import time
+
+AGENT_ENDPOINT = "http://localhost:8000/execute"
+
+def run_harness(task_list):
+    print("Initializing AI Agent Harness...\n")
+    
+    for i, task in enumerate(task_list, start=1):
+        print(f"--- Dispatching Task {i} ---")
+        print(f"Instruction: {task}")
+        
+        try:
+            # Send the task to the Agent in Repo 1
+            response = requests.post(AGENT_ENDPOINT, json={"prompt": task})
+            response.raise_for_status()
+            
+            # Parse the Agent's response
+            result = response.json()
+            print(f"Agent Reply: {result.get('response')}\n")
+            
+        except requests.exceptions.ConnectionError:
+            print("Error: Could not connect to the Agent. Is Repo 1 running?\n")
+            break
+            
+        time.sleep(1) # Throttle requests slightly
+
+if __name__ == "__main__":
+    # Your harness payload
+    tasks_to_test = [
+        "Read the error logs from the database.",
+        "Draft a summary of yesterday's active users.",
+        "Check system memory usage."
+    ]
+    
+    run_harness(tasks_to_test)
